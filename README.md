@@ -1,2 +1,4 @@
-# mofid
-useful links for websites and videos
+# MOFID
+# in this repo, we have:
+ useful videos and websites links </br>
+ some pieces of code
