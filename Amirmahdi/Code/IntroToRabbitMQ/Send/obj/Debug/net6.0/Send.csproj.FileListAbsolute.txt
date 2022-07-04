@@ -1,0 +1,17 @@
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\bin\Debug\net6.0\Send.exe
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\bin\Debug\net6.0\Send.deps.json
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\bin\Debug\net6.0\Send.runtimeconfig.json
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\bin\Debug\net6.0\Send.dll
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\bin\Debug\net6.0\Send.pdb
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\bin\Debug\net6.0\RabbitMQ.Client.dll
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\Send.csproj.AssemblyReference.cache
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\Send.GeneratedMSBuildEditorConfig.editorconfig
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\Send.AssemblyInfoInputs.cache
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\Send.AssemblyInfo.cs
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\Send.csproj.CoreCompileInputs.cache
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\Send.csproj.CopyComplete
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\Send.dll
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\refint\Send.dll
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\Send.pdb
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\Send.genruntimeconfig.cache
+W:\Projects\Visual Studio\dotnet\IntroToRabbitMQ\Send\obj\Debug\net6.0\ref\Send.dll
