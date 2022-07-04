@@ -1,0 +1,68 @@
+create table student (
+    student_id int primary key auto_increment,
+    student_name varchar(20) not null unique,
+    student_major varchar(20) 
+);
+
+describe student;
+
+drop table student;
+
+
+
+alter table student add student_grade decimal(4, 2) default 12.00;
+
+alter table student drop student_grade;
+
+
+insert into student values(1, "Jack", "Biology", 17.35); 
+insert into student(student_name, student_major, student_grade) values("Kate", "Sociology", 19.23);
+insert into student(student_major, student_name, student_grade) values("Computer Science", "Claire", 13.54);
+insert into student(student_name) values("Michel");
+
+
+
+update student set student_major = "Bio";
+update student set student_major = "Computer Science" where student_name = "Claire"; 
+update student set student_major = "Sociology" where student_id = 2;
+update student set student_grade = 18.14 where student_grade = 12.00;
+update student set student_major = "English" where student_name = "Michel";
+
+
+insert into student(student_name, student_grade, student_major) value("Sara", 16.98, "Chemistry");
+
+
+
+update student set student_major = "BioChemistry" where student_major = "Bio" or student_major = "Chemistry";
+update student set student_major = "BioChemistry" where student_major in ("Bio", "Chemistry");
+
+
+update student set student_grade = 14.43 where student_id = 2 or student_name = "Michel";
+update student set student_name = "Mike", student_id = 6 where student_name = "Michel" and student_id = 4;
+
+
+insert into student values(4, "Michel", "English", "19.63");
+
+
+delete from student where student_id = 6 and student_name = "Mike" and student_grade = 14.43;
+
+
+
+
+select student_name, student_major from student;
+select student_name, student_major, student_grade from student order by student_name;
+select student_name, student_major, student_grade from student order by student_grade desc, student_name;
+
+
+select student_name, student_major, student_grade from student limit 3;
+select student_name, student_major, student_grade from student order by student_name limit 3;
+
+
+select * from student where student_name = "Jack" or student_name = "Claire"; 
+select * from student where student_major = "BioChemistry";
+select * from student where student_major <> "BioChemistry";
+select * from student where student_id < 4;
+
+select * from student where student_id in (1, 2, 3) or student_name in ("Kate", "Sara");
+
+select * from student;

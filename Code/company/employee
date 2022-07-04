@@ -1,0 +1,16 @@
+create table employee (
+    employee_id int,
+    first_name varchar(20),
+    last_name varchar(20),
+    birthday date,
+    sex varchar(1),
+    salary int, 
+    super_id int, -- foreign key
+    branch_id int, -- foreign key
+    primary key (employee_id)
+);
+
+-- after creating employee and branch tables we can set super_id, branch_id as foreign keys 
+alter table employee add foreign key (super_id) references employee(employee_id) on delete set null;
+alter table employee add foreign key (branch_id) references branch(branch_id) on delete set null;
+

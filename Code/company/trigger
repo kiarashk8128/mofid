@@ -1,0 +1,35 @@
+create table trigger_table (
+    msg varchar(50)
+);
+
+-- open MySql 8.0 Command Line Client and login
+-- then paste the following pieces of code   
+
+use company; -- any database you want 
+
+delimiter !
+
+create trigger new_trigger before insert on employee for each row begin
+if new.sex = "M" then insert into trigger_table values(concat("new male employee ", new.first_name, " added successfuly"));
+elseif new.sex = "F" then insert into trigger_table values(concat("new female employee ", new.first_name, " added successfuly"));
+else insert into trigger_table values(concat("new employee ", new.first_name, " added successfuly"));
+end if;
+end !
+
+delimiter ;
+
+
+
+
+insert into employee values(109, "Robert", "Pattinson", "1988-03-23", "M", 100000, 100, 1);
+insert into employee values(110, "Kiley", "Jenner", "1994-08-12", "F", 85000, 100, 1);
+
+
+select * from trigger_table;
+
+
+
+
+drop trigger new_trigger;
+drop table trigger_table;
+delete from employee where employee.employee_id = 109 or employee.employee_id = 110; 

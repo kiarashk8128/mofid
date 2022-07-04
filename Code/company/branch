@@ -1,0 +1,16 @@
+create table branch(
+    branch_id int,
+    branch_name varchar(25),
+    manager_id int,
+    manager_start_date date,
+    primary key (branch_id),
+    foreign key (manager_id) references employee(employee_id) on delete set NULL
+);
+
+create table branch_supplier (
+    branch_id int,
+    supplier_name varchar(20),
+    supply_type varchar(20),    
+    primary key (branch_id, supplier_name),
+    foreign key (branch_id) references branch(branch_id) on delete cascade
+);

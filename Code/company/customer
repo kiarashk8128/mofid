@@ -1,0 +1,10 @@
+create table customer (
+    customer_id int auto_increment,
+    customer_name varchar(20),
+    branch_id int,
+    primary key (customer_id),
+    foreign key (branch_id) references branch(branch_id) on delete set NULL
+);
+
+alter table customer auto_increment = 400;
+

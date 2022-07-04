@@ -1,0 +1,9 @@
+create table works_with (
+    employee_id int,
+    customer_id int,
+    total_sales int,
+    primary key (employee_id, customer_id),
+    foreign key (employee_id) references employee(employee_id) on delete cascade,
+    foreign key (customer_id) references customer(customer_id) on delete cascade 
+);
+

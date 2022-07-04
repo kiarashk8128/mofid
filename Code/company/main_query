@@ -1,0 +1,130 @@
+insert into employee values(100, "David", "Wallace", "1967-11-17", "M", 250000, NULL, NULL);
+insert into branch values(1, "Corproate", 100, "2006-02-09");
+update employee set employee.branch_id = 1 where employee.employee_id = 100;
+
+insert into employee values(102, "Michael", "Scott", "1964-03-15", "M", 75000, 100, NULL);
+insert into branch values(2, "Scranton", 102, "1992-04-06");
+update employee set employee.branch_id = 2 where employee.employee_id = 102;
+
+insert into employee values(106, "Josh", "Porter", "1969-09-05", "M", 78000, 100, NULL);
+insert into branch values(3, "Stamford", 106, "1998-02-13");
+update employee set employee.branch_id = 3 where employee.employee_id = 106;
+
+insert into employee values(101, "Jan", "Levinson", "1961-05-11", "F", 110000, 100, 1);
+insert into employee values(103, "Angela", "Martin", "1971-06-25", "F", 63000, 102, 2);
+insert into employee values(104, "Kelly", "Kapoor", "1980-02-05", "F", 55000, 102, 2);
+insert into employee values(105, "Stanley", "Hudson", "1958-02-19", "M", 69000, 102, 2);
+insert into employee values(107, "Andy", "Bernard", "1973-07-22", "M", 65000, 106, 3);
+insert into employee values(108, "Jim", "Halpert", "1978-10-01", "M", 71000, 106, 3);
+
+
+insert into customer(customer.customer_name, customer.branch_id) values("Dunmore Highschool", 2);
+insert into customer(customer.customer_name, customer.branch_id) values("Lakawana Country", 2);
+insert into customer(customer.customer_name, customer.branch_id) values("FedEx", 3);
+insert into customer(customer.customer_name, customer.branch_id) values("John Daly Law, LLC", 3);
+insert into customer(customer.customer_name, customer.branch_id) values("Scranton Whitepages", 2);
+insert into customer(customer.customer_name, customer.branch_id) values("Times Newspaper", 3);
+insert into customer(customer.customer_name, customer.branch_id) values("FedEx", 2);
+
+
+insert into works_with values(105, 400, 55000);
+insert into works_with values(102, 401, 267000);
+insert into works_with values(108, 402, 22500);
+insert into works_with values(107, 403, 5000);
+insert into works_with values(108, 403, 12000);
+insert into works_with values(105, 404, 33000);
+insert into works_with values(107, 405, 26000);
+insert into works_with values(102, 406, 15000);
+insert into works_with values(105, 406, 130000);
+
+
+
+insert into branch_supplier values(2, "Hammer Mill", "Paper");
+insert into branch_supplier values(2, "Uni-ball", "Writing Utensils");
+insert into branch_supplier values(3, "Patriot Paper", "Paper");
+insert into branch_supplier values(2, "J.T. Forms & Labels", "Custom Forms");
+insert into branch_supplier values(3, "Uni-ball", "Writing Utensils");
+insert into branch_supplier values(3, "Hammer Mill", "Paper");
+insert into branch_supplier values(3, "Stamford Labels", "Custom Forms");
+
+select * from employee order by salary desc;
+select * from employee order by sex desc, last_name, first_name;
+select * from employee limit 5;
+select first_name, last_name from employee;
+select first_name as forename, last_name as surname from employee;
+
+select distinct sex from employee;
+select distinct first_name from employee;
+select distinct super_id from employee;
+select distinct branch_id from employee;
+
+select count(employee.employee_id) as "employee NO" from employee;
+select count(employee.employee_id) as "employee NO" from employee;
+select count(employee.super_id) as "not_leader" from employee;
+select count(employee.super_id) as "co_leader" from employee where employee.super_id = 100;
+-- select count (select distinct employee.super_id from employee) as "manager NO";
+
+
+select avg(employee.salary) from employee;
+select avg(employee.salary) from employee where sex = "F";
+
+select sum(employee.salary) from employee;
+select sum(employee.salary) from employee where sex = "M";
+select sum(total_sales) from works_with;
+
+
+select count(sex) as "number", sex from employee group by sex;
+select count(employee.super_id), super_id from employee where super_id is not null group by super_id;
+select sum(total_sales), works_with.employee_id from works_with group by works_with.employee_id order by sum(total_sales) desc;
+select sum(total_sales), works_with.customer_id from works_with group by works_with.customer_id order by sum(total_sales) desc; 
+
+
+-- "%" = (regex) ".*"
+-- "_" = (regex) "."  
+
+select * from employee where first_name like "%y";
+select * from employee where first_name like "J%";
+select * from branch_supplier where supplier_name like "H%l";
+select * from branch_supplier where supplier_name like "%Labels";
+select * from customer where customer_name like "%LLC";
+select * from customer where customer_name like "%un%Hi%ool%";
+
+select * from employee where birthday like "%-02-%";
+select * from employee where birthday like "%05";
+
+select * from employee where birthday like "____-02-__";
+select * from employee where birthday like "____-__-05";
+
+
+select employee.last_name as "names" from employee union select customer.customer_name from customer;
+select employee.employee_id as "id", employee.last_name  as "name" from employee union select customer.customer_id, customer.customer_name from customer union select branch_supplier.branch_id, supplier_name from branch_supplier; 
+
+
+select * from employee join branch on employee.employee_id = branch.manager_id;
+--  in inner join, we can use where instead of on 
+select * from employee join branch where employee.employee_id = branch.manager_id;
+
+ 
+select first_name, last_name, branch_name from employee left join branch on employee_id = manager_id order by branch_name desc;
+select first_name, last_name, branch_name from employee right join branch on employee_id = manager_id order by branch_name desc;
+insert into branch values(4, "Buffalo", null, null);
+select first_name, last_name, branch_name from employee right join branch on employee_id = manager_id order by branch_name desc;
+
+
+select first_name, last_name, employee_id from employee where employee.employee_id in (select works_with.employee_id from works_with where total_sales > 30000);  
+select * from customer where customer.branch_id in (select branch.branch_id from branch where branch.manager_id in (select employee.employee_id from employee where first_name = "Michael" and last_name = "Scott"));
+
+
+-- on delete set null vs on delete cascade
+-- on delete set null -> when we delete a foreign key ,sql sets related sections as null
+-- but on delete cascade -> when we delete a foreign key ,sql deletes relate sections too
+delete from employee where employee.employee_id = 102;
+select * from employee; -- set null
+select * from branch; -- set null 
+
+delete from branch where branch_id = 2; 
+select * from branch_supplier; -- cascade
+
+
+
+
