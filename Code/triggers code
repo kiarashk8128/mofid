@@ -1,0 +1,139 @@
+--remember to do the delimiter part in cmd
+
+
+create table employee(
+emp_id int auto_increment, 
+first_name varchar(40),
+last_name varchar(40),
+birth_date date,sex varchar(1),
+salary int,
+super_id int,
+branch_id int,
+primary key(emp_id)
+);
+describe employee;
+select * from employee;
+create table branch(
+branch_id int auto_increment,
+branch_name varchar(40),
+mgr_id int,
+mgr_start_date date,
+primary key (branch_id),
+foreign key (mgr_id) references employee(emp_id) on delete set null
+-- on delete set null is used for foreign keys when they are deleted in the other table their value will be set to null
+);
+select* from branch;
+alter table employee
+add foreign key(branch_id) 
+references branch(branch_id) on delete set null;
+alter table employee
+add foreign key (super_id)
+references employee(emp_id) on delete set null;
+describe employee;
+create table client(
+client_id int auto_increment,
+client_name varchar(40),
+primary key(client_id),
+branch_id int,
+foreign key(branch_id) references branch(branch_id) on delete set null
+);
+describe client;
+create table works_with(
+emp_id int,
+client_id int,
+primary key(emp_id,client_id),
+total_sales int,
+foreign key(emp_id) references employee(emp_id) on delete cascade,
+foreign key(client_id) references client(client_id) on  delete cascade
+-- on delete cascade means if the item deletes, the whole line related to it in other tables will be deleted too,
+-- on delete set null is for foreign keys but delete cascade is for primitive keys
+);
+describe works_with;
+create table branch_supplier(
+branch_id int,
+supplier_name varchar(40),
+supply_type varchar(40),
+foreign key(branch_id) references branch(branch_id) on delete cascade,
+primary key(branch_id,supplier_name)
+);
+describe branch_supplier;
+insert into employee values(100,'David', 'Wallace','1967-11-17','M',250000,NULL,NULL);
+insert into branch values(1,'Corporate',100,'2006-02-09');
+update employee set branch_id=1 where emp_id=100;
+select * from employee;
+select * from branch;
+insert into employee values(101,'Jan','Levinson','1961-05-11','F',110000,100,1);
+insert into employee values(102,'Michael', 'Scott','1962-03-15', 'M', 75000,100,NULL);
+insert into branch values(2,'Scranton', 102,'1992-04-06');
+update employee set branch_id=2 where emp_id=102;
+insert into employee values(103,'Angela','Martin','1971-06-25','F',63000,102,2);
+insert into employee values(104,'Kelly','Kapoor','1980-02-05','F',55000,102,2);
+insert into employee values(105,'Stanley','Hudson','1958-02-19','M',69000,102,2);
+insert into employee values(106,'Josh','Porter','1969-09-05','M',78000,100,NULL);
+insert into branch values(3,'Stamford',106,'1998-02-13');
+update employee set branch_id =3 where emp_id=106;
+insert into employee values(107,'Andy','Bernard','1973-07-22','M',65000,106,3);
+insert into employee values(108,'Jim','Halpert','1978-10-01','M',71000,106,3);
+insert into client values(400,'Dunmore Highschool',2);
+insert into client (client_name,branch_id)values('Lackawana Country',2);
+insert into client (client_name,branch_id)values('Fedex',3);
+insert into client (client_name,branch_id)values('John DalyLaw,LLC',3),('Scranton Whitepages',2),('Times Newspaper',3),('FedEx',2);
+select * from client;
+insert into works_with values(105,400,55000),(102,401,267000),(108,402,22500),(107,403,5000),(108,403,12000),
+(105,404,33000),(107,405,26000),(102,406,20000),(105,406,30000);
+update works_with set total_sales=130000 where emp_id=105 and client_id=406;
+update works_with set total_sales=15000 where emp_id=102 and client_id=406;
+SELECT * from works_with;
+insert into branch_supplier values(2,'Hammer Mill','Paper'),(2,'Uni-ball','Writing utensills'),(3,'Patriot Paper','Paper'),
+(2,'J.T.Forms & Labels','Custom Forms'),(3,'Uni-ball','Writing Utensills'),(3,'Hammer Mill','Paper'),(3,'Stamford Lables','Custom Forms');
+update branch_supplier set supplier_name='Stamford Labels' where branch_id=3 and supply_type='Custom Forms';
+select * from branch_supplier;
+--...............................................
+--.....................................................
+--...................................................
+--....................................................
+
+
+
+select * from employee;
+create table trigger_test(
+    message varchar(100)
+);
+drop table trigger_test;
+delimiter $$
+create
+    trigger my_trigger before INSERT
+    on employee
+    for each row begin
+        insert into trigger_test VALUES('added new employee');
+    end$$
+delimiter ;
+delimiter $$
+create
+    trigger my_trigger1 before INSERT
+    on employee
+    for each row begin
+        insert into trigger_test VALUES(new.first_name);
+    end$$
+delimiter ;
+delimiter $$
+create
+    trigger my_trigger2 before INSERT
+    on employee
+    for each row begin
+        if new.sex='M' then
+            insert into trigger_test VALUES('added male employee');
+        elseif new.sex='F' then
+            insert into trigger_test VALUES('added female employee');
+        else
+            insert into trigger_test VALUES('added other employee');
+        end if;
+    end$$
+delimiter ;
+ insert into employee values(109,'Oscar','Martinez','1968-02-19', 'M',69000,106,3);
+ select * from trigger_test;
+insert into employee values(110,'Oscars','Martinezs','1968-02-19', 'M',69000,107,2);
+insert into employee values(111,'Oscarst','Martinezst','1968-02-19', 'M',69000,108,3);
+insert into employee values(112,'Nazi','Melano','1968-02-19', 'F',70000,105,3);
+insert into employee values(113,'Nora','Bing','1968-02-19', 'F',69000,108,3);
+insert into employee values(114,'Mike','Martinezst','1968-02-19', 'M',59000,106,2);

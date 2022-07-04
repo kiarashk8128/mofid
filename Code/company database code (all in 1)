@@ -1,0 +1,156 @@
+--this is the code for sql server at popsql
+
+
+
+
+create table employee(
+emp_id int auto_increment, 
+first_name varchar(40),
+last_name varchar(40),
+birth_date date,sex varchar(1),
+salary int,
+super_id int,
+branch_id int,
+primary key(emp_id)
+);
+describe employee;
+select * from employee;
+create table branch(
+branch_id int auto_increment,
+branch_name varchar(40),
+mgr_id int,
+mgr_start_date date,
+primary key (branch_id),
+foreign key (mgr_id) references employee(emp_id) on delete set null
+-- on delete set null is used for foreign keys when they are deleted in the other table their value will be set to null
+);
+select* from branch;
+alter table employee
+add foreign key(branch_id) 
+references branch(branch_id) on delete set null;
+alter table employee
+add foreign key (super_id)
+references employee(emp_id) on delete set null;
+describe employee;
+create table client(
+client_id int auto_increment,
+client_name varchar(40),
+primary key(client_id),
+branch_id int,
+foreign key(branch_id) references branch(branch_id) on delete set null
+);
+describe client;
+create table works_with(
+emp_id int,
+client_id int,
+primary key(emp_id,client_id),
+total_sales int,
+foreign key(emp_id) references employee(emp_id) on delete cascade,
+foreign key(client_id) references client(client_id) on  delete cascade
+-- on delete cascade means if the item deletes, the whole line related to it in other tables will be deleted too,
+-- on delete set null is for foreign keys but delete cascade is for primitive keys
+);
+describe works_with;
+create table branch_supplier(
+branch_id int,
+supplier_name varchar(40),
+supply_type varchar(40),
+foreign key(branch_id) references branch(branch_id) on delete cascade,
+primary key(branch_id,supplier_name)
+);
+describe branch_supplier;
+insert into employee values(100,'David', 'Wallace','1967-11-17','M',250000,NULL,NULL);
+insert into branch values(1,'Corporate',100,'2006-02-09');
+update employee set branch_id=1 where emp_id=100;
+select * from employee;
+select * from branch;
+insert into employee values(101,'Jan','Levinson','1961-05-11','F',110000,100,1);
+insert into employee values(102,'Michael', 'Scott','1962-03-15', 'M', 75000,100,NULL);
+insert into branch values(2,'Scranton', 102,'1992-04-06');
+update employee set branch_id=2 where emp_id=102;
+insert into employee values(103,'Angela','Martin','1971-06-25','F',63000,102,2);
+insert into employee values(104,'Kelly','Kapoor','1980-02-05','F',55000,102,2);
+insert into employee values(105,'Stanley','Hudson','1958-02-19','M',69000,102,2);
+insert into employee values(106,'Josh','Porter','1969-09-05','M',78000,100,NULL);
+insert into branch values(3,'Stamford',106,'1998-02-13');
+update employee set branch_id =3 where emp_id=106;
+insert into employee values(107,'Andy','Bernard','1973-07-22','M',65000,106,3);
+insert into employee values(108,'Jim','Halpert','1978-10-01','M',71000,106,3);
+insert into client values(400,'Dunmore Highschool',2);
+insert into client (client_name,branch_id)values('Lackawana Country',2);
+insert into client (client_name,branch_id)values('Fedex',3);
+insert into client (client_name,branch_id)values('John DalyLaw,LLC',3),('Scranton Whitepages',2),('Times Newspaper',3),('FedEx',2);
+select * from client;
+insert into works_with values(105,400,55000),(102,401,267000),(108,402,22500),(107,403,5000),(108,403,12000),
+(105,404,33000),(107,405,26000),(102,406,20000),(105,406,30000);
+update works_with set total_sales=130000 where emp_id=105 and client_id=406;
+update works_with set total_sales=15000 where emp_id=102 and client_id=406;
+SELECT * from works_with;
+insert into branch_supplier values(2,'Hammer Mill','Paper'),(2,'Uni-ball','Writing utensills'),(3,'Patriot Paper','Paper'),
+(2,'J.T.Forms & Labels','Custom Forms'),(3,'Uni-ball','Writing Utensills'),(3,'Hammer Mill','Paper'),(3,'Stamford Lables','Custom Forms');
+update branch_supplier set supplier_name='Stamford Labels' where branch_id=3 and supply_type='Custom Forms';
+select * from branch_supplier;
+select * from employee limit 5;
+select first_name as forename,last_name as surname from employee; -- changing the column name and then show it
+select*from employee;
+select distinct sex from employee; --showing the different types of a column
+select count(emp_id) from employee;
+select count(super_id) from employee;
+select count(sex) from employee where sex='M' ; --counting specificly
+select count(sex) from employee where sex='F' and birth_date>'1970-01-01' ;
+select AVG(salary) from employee; -- calculate the average
+select AVG(salary) from employee where sex='M';
+select SUM(salary) from employee; --calculate the sum
+select count(sex), sex from employee group by sex; -- calculate count of each type by group
+select count(super_id), super_id from employee group by super_id;
+select sum(total_sales), emp_id from works_with group by emp_id; -- sum of total sales by each of the employees
+select sum(total_sales), client_id from works_with group by client_id;
+select min(total_sales) from works_with;
+select max(total_sales) from works_with;
+select UCASE(first_name),LCASE(last_name) from employee; -- shows columns indexes uppercase and lower case
+select * from employee where first_name like '%el%'; -- wildcard like like regex when index contain sth like the patters( if use % at the end shows all of them and doesn't matter where the pattern is in the index)
+-- (%) is for any character and (_) is for one character
+select* from employee where first_name like '%el';
+select * from branch_supplier where supplier_name like '%label%';
+select * from employee where birth_date like '____-10%';-- all the employees that are born in october(____  count is for and is for 4 characters of the year)
+select * from employee where birth_date like '____-02%';
+select * from client where client_name like '%school%';
+select first_name from employee union select branch_name from branch;-- unions the tables and shows them the first selected will be the name of the column
+-- in unions, we the num of the columns of first table must be same with the second one
+select first_name from employee union select branch_name from branch union select supply_type from branch_supplier;
+select first_name as company_names from employee union select branch_name from branch union select supply_type from branch_supplier; --change the column name f result
+select client_name,branch_id from client union select supplier_name , branch_id from branch_supplier;
+select employee.emp_id,employee.first_name,branch.branch_name
+from employee JOIN  branch
+on employee.emp_id=branch.mgr_id; -- joining the branch and employee table on branch where empid=mgrid(inner join which is for just columns in common)
+select employee.super_id,employee.first_name,branch.branch_name
+from employee JOIN  branch
+on employee.super_id=branch.mgr_id;
+select employee.emp_id,employee.first_name,branch.branch_name
+from employee left JOIN  branch
+on employee.emp_id=branch.mgr_id; --(left join includes left part of the table all of the results for columns not just the common ones)
+select employee.super_id,employee.first_name,branch.branch_name
+from employee left JOIN  branch
+on employee.super_id=branch.mgr_id;
+insert into branch values(4,'Bufallo',null,null);
+select employee.emp_id,employee.first_name,branch.branch_name
+from employee right JOIN  branch
+on employee.emp_id=branch.mgr_id; -- (right join includes right part of the tablle all of the results for columns not just the common ones)
+select employee.super_id,employee.first_name,branch.branch_name
+from employee right JOIN  branch
+on employee.super_id=branch.mgr_id;
+select employee.first_name,employee.last_name from employee
+where employee.emp_id in(select emp_id from works_with where total_sales>30000); -- nested query for having connection between tables like oop
+select branch.branch_id , branch.branch_name from branch
+-- in the next query we want to find all the clients who are handled by michael scott as a manager branch by his id
+where branch.branch_id in(select branch_id from client);
+select client.client_name,client.client_id from client
+where client.branch_id in(select branch.branch_id from branch where branch.mgr_id in(select emp_id from employee where emp_id=102 ));
+-- another way of the upside example
+select client.client_name,client.client_id from client
+where client.branch_id =(select branch.branch_id from branch where branch.mgr_id=102);
+
+
+
+
+
